@@ -2066,8 +2066,9 @@ void vtlb_ResetFastmem()
 	for (u32 vaddr = 0x10000000; vaddr < 0x14000000u; vaddr += VTLB_PAGE_SIZE)
 	{
 		int page = vaddr >> VTLB_PAGE_BITS;
-		vtlbdata.vmap[page] = 0;
+		vtlbdata.vmap[page] = VTLBVirtual();
 	}
+}
 // [TODO] basemem - request allocating memory at the specified virtual location, which can allow
 //    for easier debugging and/or 3rd party cheat programs.  If 0, the operating system
 //    default is used.
