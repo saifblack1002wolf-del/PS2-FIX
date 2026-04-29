@@ -2061,9 +2061,13 @@ void vtlb_ResetFastmem()
 		if (vtlb_GetMainMemoryOffsetFromPtr(vm.assumePtr(vaddr), &mainmem_offset, &mainmem_size, &prot))
 			vtlb_CreateFastmemMapping(vaddr, mainmem_offset, prot);
 	}
-}
 
-// Reserves the vtlb core allocation used by various emulation components!
+	// Prevent fastmem on PS2 hardware register range to avoid SIGBUS
+	for (u32 vaddr = 0x10000000; vaddr < 0x14000000u; vaddr += VTLB_PAGE_SIZE)
+	{
+		int page = vaddr >> VTLB_PAGE_BITS;
+		vtlbdata.vmap[page] = 0;
+	}
 // [TODO] basemem - request allocating memory at the specified virtual location, which can allow
 //    for easier debugging and/or 3rd party cheat programs.  If 0, the operating system
 //    default is used.
